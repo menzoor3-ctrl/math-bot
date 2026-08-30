@@ -48,10 +48,10 @@
     </div>
 
     <script>
-        // 1. ضع مفتاح الـ API الخاص بـ Google Gemini هنا
-        const GEMINI_API_KEY = "AQ.Ab8RN6Kejc2bUeqT6O-HjivTjcmyzKbR7iygP8JLog052YStyw"; 
+        // 1. مفتاح الـ API الخاص بـ Google Gemini
+        const GEMINI_API_KEY = "AQ.Ab8RN6LWwew85OSqwBUDprwa7r2F1NvA4unZyvjAvmOy7faLUw"; 
 
-        // 2. ضع رابط Google Sheets (Web App URL) الذي نسخته منذ قليل هنا
+        // 2. رابط Google Sheets (Web App URL)
         const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyyLARpLZsbgTrk9OHRheXuEN7sc9Y5VY1LQsGhpucFtaoDvTEm7eK3I3_OkhcLxuqO/exec";
 
         async function sendMessage() {
@@ -111,9 +111,13 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
-                const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                // التعديل هنا: استخدام الرابط بدون المفتاح، وتمرير المفتاح في الـ headers
+                const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "x-goog-api-key": GEMINI_API_KEY
+                    },
                     body: JSON.stringify({
                         contents: [
                             {
