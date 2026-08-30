@@ -3,27 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الرياضيات الذكية - متصلة بقاعدة البيانات</title>
+    <title>منصة الرياضيات الذكية - تفاعلية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
         .gradient-text { background: linear-gradient(to left, #ff8a00, #e52e71); -webkit-background-clip: text; color: transparent; }
+        
+        /* شريط التمرير المخصص للمحادثة */
+        .chat-scroll::-webkit-scrollbar { width: 6px; }
+        .chat-scroll::-webkit-scrollbar-track { background: transparent; }
+        .chat-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center min-h-screen font-sans p-4">
     
+    <!-- حاوية التطبيق -->
     <div class="glass w-full max-w-sm h-[750px] rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden relative border-[8px] border-white/40">
         
-        <!-- الشريط العلوي الحيوي -->
-        <div class="bg-gradient-to-r from-amber-400 to-orange-500 p-5 flex justify-between items-center shadow-lg rounded-b-3xl z-10">
+        <!-- الشريط العلوي (تم جلب البيانات بنجاح) -->
+        <div class="bg-gradient-to-r from-amber-400 to-orange-500 p-5 flex justify-between items-center shadow-lg z-10 rounded-b-3xl">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-orange-500 text-xl font-bold shadow-inner">👦🏽</div>
-                <!-- هنا سيظهر اسم التلميذ من قاعدة بياناتك -->
                 <span id="student-name" class="font-bold text-white text-lg drop-shadow-md">جاري التحميل...</span>
             </div>
             <div class="flex items-center gap-2">
-                <!-- هنا ستظهر النقاط والجواهر -->
                 <span class="bg-white/30 text-white px-2 py-1.5 rounded-full font-bold text-xs shadow-sm flex items-center gap-1 border border-white/50">
                     <i class="fas fa-star text-yellow-200"></i> <span id="student-points">0</span>
                 </span>
@@ -33,25 +37,75 @@
             </div>
         </div>
 
-        <!-- محتوى التطبيق (نفس التصميم السابق) -->
-        <div class="text-center mt-4 mb-2 px-4">
-            <h2 class="text-lg font-extrabold gradient-text bg-white inline-block px-6 py-2 rounded-full shadow-sm border border-gray-100">
-                🚀 الدرس: الدوال التآلفية
-            </h2>
-        </div>
-        <div class="flex-1 p-5 overflow-y-auto flex flex-col gap-5">
+        <!-- مساحة المحادثة والدرس -->
+        <div class="flex-1 p-5 overflow-y-auto flex flex-col gap-5 chat-scroll bg-gray-50/50">
+            
+            <!-- عنوان الدرس مع أيقونة الكتاب -->
+            <div class="text-center mt-2 mb-2">
+                <div class="inline-flex items-center gap-2 bg-white px-6 py-2 rounded-full shadow-sm border border-gray-100">
+                    <i class="fas fa-book-open text-indigo-500 text-lg"></i>
+                    <h2 class="text-md font-extrabold gradient-text">الدرس: الدوال التآلفية</h2>
+                </div>
+            </div>
+
+            <!-- رسالة الترحيب من المساعد -->
             <div class="self-start max-w-[90%]">
                 <div class="flex items-end gap-2">
-                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 text-lg mb-2 shadow-sm">🤖</div>
+                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 text-lg mb-2 shadow-sm shrink-0">🤖</div>
                     <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-4 rounded-3xl rounded-br-sm shadow-lg border border-blue-400/50">
                         <p class="text-sm font-medium">مرحباً يا بطل! 🌟 تم ربط المنصة بقاعدة بيانات الأستاذ بنجاح.</p>
                     </div>
                 </div>
             </div>
+
+            <!-- محتوى الدرس (تجريبي) -->
+            <div class="self-start max-w-[95%] w-full">
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-200 relative overflow-hidden">
+                    <!-- خلفية مزخرفة خفيفة -->
+                    <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(#4f46e5 1px, transparent 1px); background-size: 10px 10px;"></div>
+                    
+                    <h3 class="font-bold text-indigo-800 mb-3 text-center text-lg z-10 relative">مفهوم الدالة التآلفية</h3>
+                    
+                    <!-- صورة المنحنى -->
+                    <div class="w-full h-40 bg-gray-100 rounded-xl mb-3 flex items-center justify-center border-2 border-dashed border-gray-300 z-10 relative">
+                        <div class="text-center text-gray-400">
+                            <i class="fas fa-chart-line text-3xl mb-1"></i>
+                            <p class="text-xs">صورة المنحنى البياني (ستجلب من الدرايف)</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-gray-700 text-center font-medium z-10 relative">
+                        الدالة التآلفية تكتب على الشكل:
+                        <br>
+                        <span class="text-lg font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md inline-block mt-2">f(x) = ax + b</span>
+                    </p>
+                </div>
+            </div>
+
+        </div> <!-- نهاية مساحة المحادثة -->
+
+        <!-- شريط الإدخال والكتابة (الجزء الجديد) -->
+        <div class="p-4 bg-white/90 backdrop-blur-md border-t border-gray-100 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-20">
+            <div class="flex gap-3 items-center bg-gray-50 p-1.5 rounded-full shadow-inner border border-gray-200 transition-all focus-within:ring-2 focus-within:ring-indigo-300 focus-within:border-indigo-400">
+                
+                <!-- زر إضافة مرفقات (اختياري) -->
+                <button class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-indigo-500 transition-colors shrink-0">
+                    <i class="fas fa-paperclip text-lg"></i>
+                </button>
+
+                <!-- حقل الكتابة -->
+                <input type="text" placeholder="اكتب رسالتك أو إجابتك هنا..." class="flex-1 bg-transparent px-2 py-2 text-sm outline-none text-gray-700 font-medium placeholder-gray-400">
+                
+                <!-- زر الإرسال -->
+                <button class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full w-11 h-11 flex items-center justify-center hover:scale-105 transition-transform shadow-md shrink-0">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
         </div>
+
     </div>
 
-    <!-- السكربت السحري للاتصال بملف Google Sheets الخاص بك -->
+    <!-- كود الربط بالسيرفر (لا تغيير فيه) -->
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzVNtsbk_uJcmAcVBtH_iTKPMjSUswAqymXWD4p3YxFuS7ch_ToBqkPF9nWstVX-MRL/exec";
 
@@ -60,21 +114,16 @@
                 let response = await fetch(API_URL);
                 let result = await response.json();
                 
-                // التأكد من وجود بيانات (أكثر من صف العناوين)
                 if (result.data && result.data.length > 1) {
-                    let studentName = result.data[1][1]; // العمود الثاني: Nom_Complet
-                    let studentPoints = result.data[1][3]; // العمود الرابع: Points
-                    let studentGems = result.data[1][4]; // العمود الخامس: Gemmes
+                    let studentName = result.data[1][1]; 
+                    let studentPoints = result.data[1][3]; 
+                    let studentGems = result.data[1][4]; 
 
-                    // تحديث الواجهة بالبيانات الحقيقية
                     document.getElementById('student-name').innerText = studentName;
                     document.getElementById('student-points').innerText = studentPoints;
                     document.getElementById('student-gems').innerText = studentGems;
-                    
-                    alert(result.message + "\nتم جلب بيانات التلميذ: " + studentName);
                 } else {
                     document.getElementById('student-name').innerText = "طالب جديد";
-                    alert(result.message + "\nلكن ورقة التلاميذ فارغة، أضف تلميذاً في الصف الثاني!");
                 }
             } catch (error) {
                 console.error("Error:", error);
@@ -82,7 +131,6 @@
             }
         }
 
-        // تشغيل دالة الجلب فور تحميل الصفحة
         window.onload = fetchData;
     </script>
 </body>
