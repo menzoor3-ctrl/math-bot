@@ -3,162 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساعد رياضيات التعليم المتوسط</title>
-    <!-- مكتبة الأيقونات Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>منصة الرياضيات الذكية - متصلة بقاعدة البيانات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f0f2f5; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; }
-        header { background-color: #1a73e8; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 10px;}
-        #chat-container { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; max-width: 800px; width: 100%; margin: 0 auto; }
-        .message { max-width: 75%; padding: 12px 16px; border-radius: 15px; line-height: 1.5; font-size: 15px; word-wrap: break-word; display: flex; align-items: flex-start; gap: 10px;}
-        .user { background-color: #1a73e8; color: white; align-self: flex-start; border-bottom-right-radius: 2px; }
-        .bot { background-color: white; color: #333; align-self: flex-end; border-bottom-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .icon-circle { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
-        .user .icon-circle { background-color: rgba(255,255,255,0.2); color: white; }
-        .bot .icon-circle { background-color: #e8f0fe; color: #1a73e8; }
-        .input-container { background: white; padding: 15px; display: flex; gap: 10px; max-width: 800px; width: 100%; margin: 0 auto; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
-        input { flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 25px; outline: none; font-size: 15px; }
-        input:focus { border-color: #1a73e8; }
-        button { background-color: #1a73e8; color: white; border: none; padding: 0 20px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
-        button:hover { background-color: #1557b0; }
-        .loading { font-style: italic; color: #777; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .gradient-text { background: linear-gradient(to left, #ff8a00, #e52e71); -webkit-background-clip: text; color: transparent; }
     </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center min-h-screen font-sans p-4">
+    
+    <div class="glass w-full max-w-sm h-[750px] rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden relative border-[8px] border-white/40">
+        
+        <!-- الشريط العلوي الحيوي -->
+        <div class="bg-gradient-to-r from-amber-400 to-orange-500 p-5 flex justify-between items-center shadow-lg rounded-b-3xl z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-orange-500 text-xl font-bold shadow-inner">👦🏽</div>
+                <!-- هنا سيظهر اسم التلميذ من قاعدة بياناتك -->
+                <span id="student-name" class="font-bold text-white text-lg drop-shadow-md">جاري التحميل...</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <!-- هنا ستظهر النقاط والجواهر -->
+                <span class="bg-white/30 text-white px-2 py-1.5 rounded-full font-bold text-xs shadow-sm flex items-center gap-1 border border-white/50">
+                    <i class="fas fa-star text-yellow-200"></i> <span id="student-points">0</span>
+                </span>
+                <span class="bg-white/30 text-white px-2 py-1.5 rounded-full font-bold text-xs shadow-sm flex items-center gap-1 border border-white/50">
+                    <i class="fas fa-gem text-blue-200"></i> <span id="student-gems">0</span>
+                </span>
+            </div>
+        </div>
 
-    <header>
-        <i class="fas fa-calculator"></i>
-        مساعد الرياضيات - التعليم المتوسط 📐
-    </header>
-
-    <div id="chat-container">
-        <div class="message bot">
-            <div class="icon-circle"><i class="fas fa-robot"></i></div>
-            <span>مرحباً بك يا بطل! أنا أستاذك الافتراضي للرياضيات في التعليم المتوسط. اطرح عليّ أي سؤال أو مسألة وسأساعدك في حلها خطوة بخطوة.</span>
+        <!-- محتوى التطبيق (نفس التصميم السابق) -->
+        <div class="text-center mt-4 mb-2 px-4">
+            <h2 class="text-lg font-extrabold gradient-text bg-white inline-block px-6 py-2 rounded-full shadow-sm border border-gray-100">
+                🚀 الدرس: الدوال التآلفية
+            </h2>
+        </div>
+        <div class="flex-1 p-5 overflow-y-auto flex flex-col gap-5">
+            <div class="self-start max-w-[90%]">
+                <div class="flex items-end gap-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 text-lg mb-2 shadow-sm">🤖</div>
+                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-4 rounded-3xl rounded-br-sm shadow-lg border border-blue-400/50">
+                        <p class="text-sm font-medium">مرحباً يا بطل! 🌟 تم ربط المنصة بقاعدة بيانات الأستاذ بنجاح.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="input-container">
-        <input type="text" id="userInput" placeholder="اكتب سؤالك الرياضي هنا..." onkeypress="handleKeyPress(event)">
-        <button onclick="sendMessage()">
-            إرسال
-            <i class="fas fa-paper-plane"></i>
-        </button>
-    </div>
-
+    <!-- السكربت السحري للاتصال بملف Google Sheets الخاص بك -->
     <script>
-        // 1. مفتاح الـ API الخاص بـ Google Gemini
-        const GEMINI_API_KEY = "AQ.Ab8RN6Ln8DNCiKquLNxtA74YBnaK1RokbkVSgnwrWhYDmb_yGA"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbzVNtsbk_uJcmAcVBtH_iTKPMjSUswAqymXWD4p3YxFuS7ch_ToBqkPF9nWstVX-MRL/exec";
 
-        // 2. رابط Google Sheets (Web App URL)
-        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyyLARpLZsbgTrk9OHRheXuEN7sc9Y5VY1LQsGhpucFtaoDvTEm7eK3I3_OkhcLxuqO/exec";
-
-        async function sendMessage() {
-            const inputField = document.getElementById("userInput");
-            const chatContainer = document.getElementById("chat-container");
-            const text = inputField.value.trim();
-
-            if (!text) return;
-
-            // عرض رسالة المستخدم
-            chatContainer.innerHTML += `
-                <div class="message user">
-                    <div class="icon-circle"><i class="fas fa-user-graduate"></i></div>
-                    <span>${escapeHtml(text)}</span>
-                </div>`;
-            inputField.value = "";
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            const lowerText = text.toLowerCase();
-
-            // محاولة جلب الردود من جدول Google Sheets المربوط
+        async function fetchData() {
             try {
-                const response = await fetch(GOOGLE_SHEET_URL);
-                const sheetData = await response.json();
+                let response = await fetch(API_URL);
+                let result = await response.json();
                 
-                let matchedReply = null;
-                for (let i = 0; i < sheetData.length; i++) {
-                    if (lowerText.includes(sheetData[i].keyword)) {
-                        matchedReply = sheetData[i].reply;
-                        break;
-                    }
-                }
+                // التأكد من وجود بيانات (أكثر من صف العناوين)
+                if (result.data && result.data.length > 1) {
+                    let studentName = result.data[1][1]; // العمود الثاني: Nom_Complet
+                    let studentPoints = result.data[1][3]; // العمود الرابع: Points
+                    let studentGems = result.data[1][4]; // العمود الخامس: Gemmes
 
-                // إذا وجدنا الكلمة في جدول جوجل شيت، نعرض الرد مباشرة ونوقف الدالة
-                if (matchedReply) {
-                    setTimeout(() => {
-                        chatContainer.innerHTML += `
-                            <div class="message bot">
-                                <div class="icon-circle"><i class="fas fa-robot"></i></div>
-                                <span>${escapeHtml(matchedReply)}</span>
-                            </div>`;
-                        chatContainer.scrollTop = chatContainer.scrollHeight;
-                    }, 400);
-                    return;
-                }
-            } catch (e) {
-                console.log("خطأ في قراءة الجدول، سيتم الانتقال للذكاء الاصطناعي مباشرة");
-            }
-
-            // إذا لم تكن في جدول جوجل، يتوجه السؤال إلى ذكاء جيميني للرياضيات
-            const loadingId = "loading_" + Date.now();
-            chatContainer.innerHTML += `
-                <div id="${loadingId}" class="message bot loading">
-                    <div class="icon-circle"><i class="fas fa-spinner fa-spin"></i></div>
-                    <span>جاري التفكير في الحل...</span>
-                </div>`;
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            try {
-                // التعديل هنا: استخدام الرابط بدون المفتاح، وتمرير المفتاح في الـ headers
-                const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`, {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json",
-                        "x-goog-api-key": GEMINI_API_KEY
-                    },
-                    body: JSON.stringify({
-                        contents: [
-                            {
-                                role: "user",
-                                parts: [
-                                    { text: "أنت أستاذ رياضيات ذكي ومختص حصرياً في مادة الرياضيات للتعليم المتوسط (في الجزائر). ممنوع منعا باتا الإجابة عن أي أسئلة خارج نطاق الرياضيات. إذا سأل المستخدم عن شيء خارج الرياضيات، أجب بأدب: 'عذراً، أنا متخصص في مساعدة تلاميذ التعليم المتوسط في مادة الرياضيات فقط.'. قدم شروحات مبسطة وواضحة خطوة بخطوة. سؤال المستخدم هو: " + text }
-                                ]
-                            }
-                        ]
-                    })
-                });
-
-                const data = await aiResponse.json();
-                document.getElementById(loadingId).remove();
-
-                if (data.candidates && data.candidates[0].content) {
-                    const reply = data.candidates[0].content.parts[0].text;
-                    chatContainer.innerHTML += `
-                        <div class="message bot">
-                            <div class="icon-circle"><i class="fas fa-robot"></i></div>
-                            <span>${escapeHtml(reply).replace(/\n/g, '<br>')}</span>
-                        </div>`;
+                    // تحديث الواجهة بالبيانات الحقيقية
+                    document.getElementById('student-name').innerText = studentName;
+                    document.getElementById('student-points').innerText = studentPoints;
+                    document.getElementById('student-gems').innerText = studentGems;
+                    
+                    alert(result.message + "\nتم جلب بيانات التلميذ: " + studentName);
                 } else {
-                    chatContainer.innerHTML += `<div class="message bot"><div class="icon-circle"><i class="fas fa-exclamation-triangle"></i></div><span>عذراً، حدث خطأ في الاتصال. تأكد من صحة مفتاح الـ API.</span></div>`;
+                    document.getElementById('student-name').innerText = "طالب جديد";
+                    alert(result.message + "\nلكن ورقة التلاميذ فارغة، أضف تلميذاً في الصف الثاني!");
                 }
             } catch (error) {
-                document.getElementById(loadingId).remove();
-                chatContainer.innerHTML += `<div class="message bot"><div class="icon-circle"><i class="fas fa-exclamation-triangle"></i></div><span>عذراً، تعذر إرسال الرسالة. تحقق من اتصالك بالإنترنت.</span></div>`;
-            }
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
+                console.error("Error:", error);
+                document.getElementById('student-name').innerText = "خطأ في الاتصال";
             }
         }
 
-        function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
+        // تشغيل دالة الجلب فور تحميل الصفحة
+        window.onload = fetchData;
     </script>
 </body>
 </html>
