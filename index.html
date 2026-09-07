@@ -3,135 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الرياضيات الذكية - تفاعلية</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>مشروع الدردشة</title>
     <style>
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .gradient-text { background: linear-gradient(to left, #ff8a00, #e52e71); -webkit-background-clip: text; color: transparent; }
+        /* إعدادات عامة للخطوط والمسافات */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* شريط التمرير المخصص للمحادثة */
-        .chat-scroll::-webkit-scrollbar { width: 6px; }
-        .chat-scroll::-webkit-scrollbar-track { background: transparent; }
-        .chat-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        body {
+            background-color: #f8f9fa; /* لون خلفية هادئ جداً خارج إطار الدردشة */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* حاوية الدردشة الرئيسية */
+        .chat-container {
+            width: 100%;
+            max-width: 800px; /* عرض مناسب يشبه جميني */
+            height: 90vh;
+            background-color: #ffffff; /* أبيض نقي ومريح */
+            border-radius: 16px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* مساحة عرض الرسائل */
+        .chat-messages {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* تصميم موحد للرسالة */
+        .message {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* رسالة المستخدم (على اليمين) */
+        .message.user {
+            background-color: #f0f4f9; /* رمادي مائل للأزرق الفاتح جداً */
+            color: #1f1f1f;
+            align-self: flex-start;
+            border-top-right-radius: 4px;
+        }
+
+        /* رسالة الطرف الآخر (على اليسار) */
+        .message.bot {
+            background-color: #ffffff;
+            color: #1f1f1f;
+            align-self: flex-end;
+            border: 1px solid #e0e0e0;
+            border-top-left-radius: 4px;
+        }
+
+        /* منطقة الإدخال السفلية */
+        .chat-input-area {
+            padding: 20px 30px;
+            background-color: #ffffff;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        /* مربع الكتابة */
+        .chat-input {
+            flex: 1;
+            padding: 16px 24px;
+            border: 1px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            background-color: #ffffff;
+        }
+        
+        .chat-input:focus { 
+            border-color: #b3d4ff;
+            box-shadow: 0 0 0 2px rgba(179, 212, 255, 0.3);
+        }
+
+        /* زر الإرسال */
+        .send-btn {
+            background-color: transparent;
+            color: #1a73e8;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .send-btn:hover { background-color: #f0f4f9; }
+        .send-btn svg { width: 24px; height: 24px; fill: currentColor; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center min-h-screen font-sans p-4">
-    
-    <!-- حاوية التطبيق -->
-    <div class="glass w-full max-w-sm h-[750px] rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col overflow-hidden relative border-[8px] border-white/40">
-        
-        <!-- الشريط العلوي (تم جلب البيانات بنجاح) -->
-        <div class="bg-gradient-to-r from-amber-400 to-orange-500 p-5 flex justify-between items-center shadow-lg z-10 rounded-b-3xl">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-orange-500 text-xl font-bold shadow-inner">👦🏽</div>
-                <span id="student-name" class="font-bold text-white text-lg drop-shadow-md">جاري التحميل...</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="bg-white/30 text-white px-2 py-1.5 rounded-full font-bold text-xs shadow-sm flex items-center gap-1 border border-white/50">
-                    <i class="fas fa-star text-yellow-200"></i> <span id="student-points">0</span>
-                </span>
-                <span class="bg-white/30 text-white px-2 py-1.5 rounded-full font-bold text-xs shadow-sm flex items-center gap-1 border border-white/50">
-                    <i class="fas fa-gem text-blue-200"></i> <span id="student-gems">0</span>
-                </span>
-            </div>
+<body>
+
+    <div class="chat-container">
+        <!-- مساحة عرض الرسائل -->
+        <div class="chat-messages" id="chat-messages">
+            <!-- سيتم إضافة الرسائل هنا -->
         </div>
 
-        <!-- مساحة المحادثة والدرس -->
-        <div class="flex-1 p-5 overflow-y-auto flex flex-col gap-5 chat-scroll bg-gray-50/50">
-            
-            <!-- عنوان الدرس مع أيقونة الكتاب -->
-            <div class="text-center mt-2 mb-2">
-                <div class="inline-flex items-center gap-2 bg-white px-6 py-2 rounded-full shadow-sm border border-gray-100">
-                    <i class="fas fa-book-open text-indigo-500 text-lg"></i>
-                    <h2 class="text-md font-extrabold gradient-text">الدرس: الدوال التآلفية</h2>
-                </div>
-            </div>
-
-            <!-- رسالة الترحيب من المساعد -->
-            <div class="self-start max-w-[90%]">
-                <div class="flex items-end gap-2">
-                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 text-lg mb-2 shadow-sm shrink-0">🤖</div>
-                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-4 rounded-3xl rounded-br-sm shadow-lg border border-blue-400/50">
-                        <p class="text-sm font-medium">مرحباً يا بطل! 🌟 تم ربط المنصة بقاعدة بيانات الأستاذ بنجاح.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- محتوى الدرس (تجريبي) -->
-            <div class="self-start max-w-[95%] w-full">
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-200 relative overflow-hidden">
-                    <!-- خلفية مزخرفة خفيفة -->
-                    <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(#4f46e5 1px, transparent 1px); background-size: 10px 10px;"></div>
-                    
-                    <h3 class="font-bold text-indigo-800 mb-3 text-center text-lg z-10 relative">مفهوم الدالة التآلفية</h3>
-                    
-                    <!-- صورة المنحنى -->
-                    <div class="w-full h-40 bg-gray-100 rounded-xl mb-3 flex items-center justify-center border-2 border-dashed border-gray-300 z-10 relative">
-                        <div class="text-center text-gray-400">
-                            <i class="fas fa-chart-line text-3xl mb-1"></i>
-                            <p class="text-xs">صورة المنحنى البياني (ستجلب من الدرايف)</p>
-                        </div>
-                    </div>
-                    
-                    <p class="text-sm text-gray-700 text-center font-medium z-10 relative">
-                        الدالة التآلفية تكتب على الشكل:
-                        <br>
-                        <span class="text-lg font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-md inline-block mt-2">f(x) = ax + b</span>
-                    </p>
-                </div>
-            </div>
-
-        </div> <!-- نهاية مساحة المحادثة -->
-
-        <!-- شريط الإدخال والكتابة (الجزء الجديد) -->
-        <div class="p-4 bg-white/90 backdrop-blur-md border-t border-gray-100 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-20">
-            <div class="flex gap-3 items-center bg-gray-50 p-1.5 rounded-full shadow-inner border border-gray-200 transition-all focus-within:ring-2 focus-within:ring-indigo-300 focus-within:border-indigo-400">
-                
-                <!-- زر إضافة مرفقات (اختياري) -->
-                <button class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-indigo-500 transition-colors shrink-0">
-                    <i class="fas fa-paperclip text-lg"></i>
-                </button>
-
-                <!-- حقل الكتابة -->
-                <input type="text" placeholder="اكتب رسالتك أو إجابتك هنا..." class="flex-1 bg-transparent px-2 py-2 text-sm outline-none text-gray-700 font-medium placeholder-gray-400">
-                
-                <!-- زر الإرسال -->
-                <button class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full w-11 h-11 flex items-center justify-center hover:scale-105 transition-transform shadow-md shrink-0">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
+        <!-- مساحة الإدخال -->
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" class="chat-input" placeholder="أدخل رسالتك هنا..." autocomplete="off">
+            <button class="send-btn" id="send-btn" aria-label="إرسال">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+            </button>
         </div>
-
     </div>
 
-    <!-- كود الربط بالسيرفر (لا تغيير فيه) -->
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzVNtsbk_uJcmAcVBtH_iTKPMjSUswAqymXWD4p3YxFuS7ch_ToBqkPF9nWstVX-MRL/exec";
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
 
-        async function fetchData() {
+        // رابط Web App الخاص بك
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzhyn-8IlCiUhGFzcZXgi43lUEo9g5qlu63yYopbW1UIfhnRZ6IIzRlyo0N7mkVrON67w/exec';
+        const CURRENT_USER = 'زائر'; 
+
+        // دالة لإضافة رسالة للشاشة مباشرة
+        function addMessageToUI(text, senderType) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = senderType === 'user' ? 'message user' : 'message bot';
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 1. جلب الرسائل القديمة مرة واحدة فقط عند فتح الصفحة
+        async function fetchInitialMessages() {
             try {
-                let response = await fetch(API_URL);
-                let result = await response.json();
+                const response = await fetch(WEB_APP_URL);
+                const messages = await response.json();
                 
-                if (result.data && result.data.length > 1) {
-                    let studentName = result.data[1][1]; 
-                    let studentPoints = result.data[1][3]; 
-                    let studentGems = result.data[1][4]; 
-
-                    document.getElementById('student-name').innerText = studentName;
-                    document.getElementById('student-points').innerText = studentPoints;
-                    document.getElementById('student-gems').innerText = studentGems;
-                } else {
-                    document.getElementById('student-name').innerText = "طالب جديد";
-                }
+                chatMessages.innerHTML = ''; 
+                messages.forEach(msg => {
+                    const type = (msg.sender === CURRENT_USER) ? 'user' : 'bot';
+                    addMessageToUI(msg.message, type);
+                });
             } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('student-name').innerText = "خطأ في الاتصال";
+                console.error('حدث خطأ أثناء جلب الرسائل:', error);
             }
         }
 
-        window.onload = fetchData;
+        // 2. إرسال الرسالة وحفظها دون إزعاج أو تحديث متكرر
+        async function sendMessage(text) {
+            if (text === '') return;
+
+            // إظهار رسالتك على الشاشة فوراً
+            addMessageToUI(text, 'user');
+
+            // إرسالها إلى قوقل شيت في الخلفية
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        sender: CURRENT_USER,
+                        message: text
+                    })
+                });
+            } catch (error) {
+                console.error('حدث خطأ أثناء الإرسال:', error);
+            }
+        }
+
+        // الأزرار والتفاعل
+        sendBtn.addEventListener('click', () => {
+            const text = chatInput.value.trim();
+            sendMessage(text);
+            chatInput.value = '';
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const text = chatInput.value.trim();
+                sendMessage(text);
+                chatInput.value = '';
+            }
+        });
+
+        // جلب الرسائل مرة واحدة فقط عند فتح الصفحة
+        fetchInitialMessages();
     </script>
 </body>
 </html>
