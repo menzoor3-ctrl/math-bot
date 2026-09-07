@@ -139,7 +139,7 @@
                 const messages = await response.json();
                 
                 chatMessages.innerHTML = ''; 
-                if (messages.length === 0) {
+                if (!messages || messages.length === 0) {
                     chatMessages.innerHTML = '<div class="message bot">لا توجد رسائل سابقة. ابدأ المحادثة الآن!</div>';
                     return;
                 }
@@ -149,27 +149,28 @@
                     addMessageToUI(msg.message, type);
                 });
             } catch (error) {
-                console.error('حدث خطأ أثناء جلب الرسائل:', error);
-                chatMessages.innerHTML = '<div class="message bot">عذراً، تعذر الاتصال بقاعدة البيانات.</div>';
+                console.error('خطأ في الجلب:', error);
+                chatMessages.innerHTML = '<div class="message bot">أهلاً بك! اكتب رسالتك الأولى.</div>';
             }
         }
 
         async function sendMessage(text) {
             if (text === '') return;
 
-            // إظهار رسالتك على الشاشة فوراً
             addMessageToUI(text, 'user');
 
             try {
                 await fetch(WEB_APP_URL, {
                     method: 'POST',
+                    redirect: 'follow', // ضروري لطلبات Google Apps Script
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         sender: CURRENT_USER,
                         message: text
                     })
                 });
             } catch (error) {
-                console.error('حدث خطأ أثناء الإرسال:', error);
+                console.error('خطأ في الإرسال:', error);
             }
         }
 
