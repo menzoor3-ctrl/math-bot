@@ -139,14 +139,34 @@
 
         // ضع الرابط الخاص بك هنا كما هو (نفس الرابط السابق الذي قمت بنشره)
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzhyn-8IlCiUhGFzcZXgi43lUEo9g5qlu63yYopbW1UIfhnRZ6IIzRlyo0N7mkVrON67w/exec';
-        const CURRENT_USER = 'زائر'; 
-
-        function addMessageToUI(text, senderType) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = senderType === 'user' ? 'message user' : 'message bot';
-            messageDiv.textContent = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+        
+        async function getGeminiResponse(userMessage) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: userMessage }]
+                        }]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // استخراج رد الذكاء الاصطناعي من النتيجة
+                if (data.candidates && data.candidates[0].content) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    return "عذراً، لم أستطع توليد رد مناسب.";
+                }
+            } catch (error) {
+                console.error('خطأ في الاتصال بجميني:', error);
+                return "حدث خطأ في الاتصال بالذكاء الاصطناعي.";
+            }
         }
 
         async function fetchInitialMessages() {
