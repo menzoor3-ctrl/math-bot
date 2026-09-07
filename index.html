@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مشروع الدردشة</title>
+    <title>مساعدك الذكي</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
@@ -42,6 +42,7 @@
             border-radius: 12px;
             font-size: 15px;
             line-height: 1.6;
+            white-space: pre-wrap; /* للسماح بعرض الأسطر المتعددة بشكل صحيح من ردود جميني */
         }
 
         .message.user {
@@ -57,6 +58,20 @@
             align-self: flex-end;
             border: 1px solid #e0e0e0;
             border-top-left-radius: 4px;
+        }
+
+        /* تنسيق خاص لرسالة التحميل (جاري الكتابة) */
+        .loading {
+            font-style: italic;
+            color: #5f6368;
+            opacity: 0.8;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
         }
 
         .chat-input-area {
@@ -110,7 +125,7 @@
         </div>
 
         <div class="chat-input-area">
-            <input type="text" id="chat-input" class="chat-input" placeholder="أدخل رسالتك هنا..." autocomplete="off">
+            <input type="text" id="chat-input" class="chat-input" placeholder="اكتب سؤالك لجميني هنا..." autocomplete="off">
             <button class="send-btn" id="send-btn" aria-label="إرسال">
                 <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
             </button>
@@ -122,6 +137,7 @@
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
 
+        // ضع الرابط الخاص بك هنا كما هو (نفس الرابط السابق الذي قمت بنشره)
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzhyn-8IlCiUhGFzcZXgi43lUEo9g5qlu63yYopbW1UIfhnRZ6IIzRlyo0N7mkVrON67w/exec';
         const CURRENT_USER = 'زائر'; 
 
@@ -140,7 +156,7 @@
                 
                 chatMessages.innerHTML = ''; 
                 if (!messages || messages.length === 0) {
-                    chatMessages.innerHTML = '<div class="message bot">لا توجد رسائل سابقة. ابدأ المحادثة الآن!</div>';
+                    chatMessages.innerHTML = '<div class="message bot">أهلاً بك! أنا مساعدك الذكي. كيف يمكنني مساعدتك اليوم؟</div>';
                     return;
                 }
 
@@ -150,27 +166,59 @@
                 });
             } catch (error) {
                 console.error('خطأ في الجلب:', error);
-                chatMessages.innerHTML = '<div class="message bot">أهلاً بك! اكتب رسالتك الأولى.</div>';
+                chatMessages.innerHTML = '<div class="message bot">أهلاً بك! اكتب رسالتك الأولى لبدء المحادثة.</div>';
             }
         }
 
         async function sendMessage(text) {
             if (text === '') return;
 
+            // 1. إظهار رسالتك أنت على الشاشة فوراً
             addMessageToUI(text, 'user');
 
+            // 2. إظهار مؤشر "جاري الكتابة..."
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot loading';
+            loadingDiv.textContent = 'جميني يكتب الآن...';
+            loadingDiv.id = 'loading-msg';
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // تعطيل خانة الإدخال حتى يرد جميني
+            chatInput.disabled = true;
+
             try {
-                await fetch(WEB_APP_URL, {
+                const response = await fetch(WEB_APP_URL, {
                     method: 'POST',
-                    redirect: 'follow', // ضروري لطلبات Google Apps Script
+                    redirect: 'follow',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         sender: CURRENT_USER,
                         message: text
                     })
                 });
+                
+                // استقبال الرد من الخادم (Google Apps Script)
+                const data = await response.json();
+                
+                // إزالة مؤشر "جاري الكتابة..."
+                const loadingElement = document.getElementById('loading-msg');
+                if (loadingElement) loadingElement.remove();
+
+                // عرض رد جميني الفعلي على الشاشة
+                if(data.status === 'success' && data.reply) {
+                    addMessageToUI(data.reply, 'bot');
+                } else {
+                    addMessageToUI('عذراً، لم أتمكن من إحضار الرد.', 'bot');
+                }
             } catch (error) {
                 console.error('خطأ في الإرسال:', error);
+                const loadingElement = document.getElementById('loading-msg');
+                if (loadingElement) loadingElement.textContent = 'عذراً، حدث خطأ في الاتصال.';
+            } finally {
+                // إعادة تفعيل خانة الإدخال
+                chatInput.disabled = false;
+                chatInput.focus();
             }
         }
 
