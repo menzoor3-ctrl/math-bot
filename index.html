@@ -157,13 +157,12 @@
         async function sendMessage(text) {
             if (text === '') return;
 
+            // إظهار رسالتك على الشاشة فوراً
             addMessageToUI(text, 'user');
 
             try {
                 await fetch(WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // لتجاوز قيود المتصفح تماماً عند الرفع على GitHub
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         sender: CURRENT_USER,
                         message: text
